@@ -47,6 +47,13 @@ class Incident extends Model implements TransformableInterface, PresenterInterfa
     protected $fillable = ['user_id', 'component_id', 'name', 'status', 'message'];
 
     /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var string[]
+     */
+    protected $dates = ['published_at'];
+
+    /**
      * The accessors to append to the model's serialized form.
      *
      * @var string[]
@@ -104,6 +111,16 @@ class Incident extends Model implements TransformableInterface, PresenterInterfa
             default:
                 return '';
         }
+    }
+
+    /**
+     * Determines if the incident is scheduled or not.
+     *
+     * @return bool
+     */
+    public function getIsScheduledAttribute()
+    {
+        return $this->published_at <> $this->created_at;
     }
 
     /**

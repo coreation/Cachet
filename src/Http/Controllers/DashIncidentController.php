@@ -2,6 +2,8 @@
 
 namespace CachetHQ\Cachet\Http\Controllers;
 
+use Carbon\Carbon;
+use CachetHQ\Cachet\Facades\Setting;
 use CachetHQ\Cachet\Models\Component;
 use CachetHQ\Cachet\Models\Incident;
 use CachetHQ\Cachet\Models\IncidentTemplate;
@@ -22,8 +24,9 @@ class DashIncidentController extends Controller
         $incidents = Incident::orderBy('created_at', 'desc')->get();
 
         return View::make('dashboard.incidents.index')->with([
-            'pageTitle' => trans('dashboard.incidents.incidents').' - '.trans('dashboard.dashboard'),
-            'incidents' => $incidents,
+            'pageTitle'  => trans('dashboard.incidents.incidents').' - '.trans('dashboard.dashboard'),
+            'incidents'  => $incidents,
+            'dateFormat' => Setting::get('date_format') ?: 'jS M Y',
         ]);
     }
 
@@ -63,6 +66,15 @@ class DashIncidentController extends Controller
     {
         $incidentData = Binput::get('incident');
         $componentStatus = array_pull($incidentData, 'component_status');
+        $publishDate = array_pull($incidentData, 'published_date');
+
+        if ($publishDate !== '') {
+            $publishDate = Carbon::createFromFormat('d/m/Y', $publishDate);
+        } else {
+            $publishDate = Carbon::now();
+        }
+
+        $incidentData['published_at'] = $publishDate;
         $incident = Incident::create($incidentData);
 
         if (! $incident->isValid()) {
@@ -76,7 +88,7 @@ class DashIncidentController extends Controller
         }
 
         // Update the component.
-        if ((int) $incidentData['component_id'] > 0) {
+        if (isset($incidentData['component_id']) && (int) $incidentData['component_id'] > 0) {
             Component::find($incidentData['component_id'])->update([
                 'status' => $componentStatus,
             ]);

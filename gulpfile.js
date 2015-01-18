@@ -19,11 +19,13 @@ gulp.task('default', function() {
             .styles([
                 'app/assets/bower_components/ionicons/css/ionicons.min.css',
                 'app/assets/bower_components/jquery-minicolors/jquery.minicolors.css',
+                'app/assets/bower_components/bootstrap-datepicker/css/datepicker3.css',
                 'public/css/main.css',
             ], './')
             .scripts([
                 'bower_components/jquery/dist/jquery.js',
                 'bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js',
+                'bower_components/bootstrap-datepicker/js/**/*.js',
                 'bower_components/lodash/dist/lodash.js',
                 'bower_components/messenger/build/js/messenger.js',
                 'bower_components/Sortable/Sortable.js',
