@@ -120,7 +120,7 @@ class Incident extends Model implements TransformableInterface, PresenterInterfa
      */
     public function getIsScheduledAttribute()
     {
-        return $this->published_at <> $this->created_at;
+        return $this->published_at != $this->created_at;
     }
 
     /**
